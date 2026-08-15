@@ -1,0 +1,8 @@
+.git
+.workbuddy
+*.db
+*.db-shm
+*.db-wal
+keyboard
+keyboard.exe
+conf.toml
