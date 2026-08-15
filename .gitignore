@@ -30,3 +30,24 @@ go.work.sum
 # Editor/IDE
 # .idea/
 # .vscode/
+
+# ===== KeyBuddy 项目专属 =====
+
+# 本地构建产物（无扩展名二进制；Go 模板只忽略了 *.exe 等）
+/keyboard
+/keyboard.exe
+__debug_bin*
+
+# SQLite 数据库文件（含 WAL/SHM 临时文件）
+*.db
+*.db-shm
+*.db-wal
+
+# 本地配置（保留 conf.example.toml 作模板）
+conf.toml
+
+# 项目个人数据（记忆 / 草稿，不入库）
+.workbuddy/
+
+# macOS
+.DS_Store
