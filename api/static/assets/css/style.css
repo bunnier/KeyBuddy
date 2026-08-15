@@ -12,6 +12,17 @@
   --current: #ffe9a8;
   --current-border: #ef9f27;
   --radius: 16px;
+
+  /* 手指分区颜色（参考标准指法教学图） */
+  --finger-lp: #c9d6f5;   /* 左手小指：淡蓝紫 */
+  --finger-lr: #f5c9df;   /* 左手无名指：淡粉 */
+  --finger-lm: #c9f0c9;   /* 左手中指：淡绿 */
+  --finger-li: #e2d0f5;   /* 左手食指：淡紫 */
+  --finger-ri: #e2d0f5;   /* 右手食指：淡紫 */
+  --finger-rm: #c9f0c9;   /* 右手中指：淡绿 */
+  --finger-rr: #f5c9df;   /* 右手无名指：淡粉 */
+  --finger-rp: #c9d6f5;   /* 右手小指：淡蓝紫 */
+  --finger-thumb: #f0e2cc;/* 拇指：米色 */
 }
 
 * { box-sizing: border-box; }
@@ -97,11 +108,39 @@ body {
   font-size: 14px;
 }
 
-.keyboard { margin-top: 22px; user-select: none; touch-action: manipulation; overflow-x: auto; padding-bottom: 6px; }
+.keyboard { margin-top: 18px; user-select: none; touch-action: manipulation; overflow-x: auto; padding-bottom: 6px; }
 .kb-row { display: flex; justify-content: center; gap: 6px; margin-bottom: 6px; flex-wrap: nowrap; }
 .kb-spacer { width: 16px; flex: 0 0 auto; }
+
+/* 手指分工指引条 */
+.kb-guide {
+  display: flex;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--muted);
+  margin: 6px 0;
+}
+.kb-guide-top { justify-content: flex-end; }
+.kb-guide-bottom { justify-content: flex-start; }
+.fg-name {
+  padding: 4px 10px;
+  border-radius: 999px;
+  white-space: nowrap;
+  font-weight: 500;
+  color: #4a4a48;
+}
+.fg-lp { background: var(--finger-lp); }
+.fg-lr { background: var(--finger-lr); }
+.fg-lm { background: var(--finger-lm); }
+.fg-li { background: var(--finger-li); }
+.fg-ri { background: var(--finger-ri); }
+.fg-rm { background: var(--finger-rm); }
+.fg-rr { background: var(--finger-rr); }
+.fg-rp { background: var(--finger-rp); }
+.fg-thumb { background: var(--finger-thumb); }
 .key-fn { font-size: 12px; min-width: 30px; padding: 0 4px; }
 .key {
+  position: relative;
   min-width: 34px;
   height: 46px;
   padding: 0 8px;
@@ -118,12 +157,34 @@ body {
   cursor: pointer;
   transition: .08s;
   user-select: none;
+  overflow: hidden;
 }
 .key:active { transform: translateY(1px); }
 .key.active {
-  background: var(--current);
-  box-shadow: 0 0 0 2px var(--current-border);
+  border-color: var(--current-border);
+  box-shadow: 0 0 0 3px var(--current-border);
+  transform: translateY(2px);
 }
+.key.active::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--current);
+  opacity: .35;
+  pointer-events: none;
+}
+
+/* 手指分区染色 */
+.finger-lp { background: var(--finger-lp) !important; }
+.finger-lr { background: var(--finger-lr) !important; }
+.finger-lm { background: var(--finger-lm) !important; }
+.finger-li { background: var(--finger-li) !important; }
+.finger-ri { background: var(--finger-ri) !important; }
+.finger-rm { background: var(--finger-rm) !important; }
+.finger-rr { background: var(--finger-rr) !important; }
+.finger-rp { background: var(--finger-rp) !important; }
+.finger-thumb { background: var(--finger-thumb) !important; }
+
 .key-wide { min-width: 60px; }
 .key-space { min-width: 220px; }
 
@@ -224,4 +285,6 @@ body {
   .key { min-width: 26px; height: 42px; font-size: 13px; padding: 0 5px; }
   .key-wide { min-width: 44px; }
   .key-space { min-width: 140px; }
+  .kb-guide { font-size: 10px; gap: 4px; }
+  .fg-name { padding: 3px 6px; }
 }
