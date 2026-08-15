@@ -1,0 +1,19 @@
+# 本地配置（可能含密钥，勿提交）
+conf.toml
+conf.local.toml
+
+# 编译产物
+/keyboard
+/keyboard.exe
+__debug_bin*
+
+# 本地 SQLite 数据库
+*.db
+*.db-shm
+*.db-wal
+
+# 系统文件
+.DS_Store
+
+# 依赖缓存
+/vendor/

@@ -1,0 +1,227 @@
+:root {
+  --bg: #f4f7fb;
+  --card: #ffffff;
+  --ink: #2c2c2a;
+  --muted: #888780;
+  --primary: #378add;
+  --primary-d: #185fa5;
+  --correct: #1d9e75;
+  --correct-bg: #e1f5ee;
+  --wrong: #e24b4a;
+  --wrong-bg: #fcebeb;
+  --current: #ffe9a8;
+  --current-border: #ef9f27;
+  --radius: 16px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  -webkit-text-size-adjust: 100%;
+}
+
+[hidden] { display: none !important; }
+
+.app {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 20px 16px 40px;
+}
+
+.app-header { text-align: center; margin-bottom: 16px; }
+.app-header h1 { font-size: 28px; margin: 0; font-weight: 600; }
+.subtitle { color: var(--muted); margin: 6px 0 0; font-size: 15px; }
+
+.lesson-bar { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 18px; }
+.lesson-label { color: var(--muted); font-size: 14px; }
+.lesson-list { display: flex; flex-wrap: wrap; gap: 8px; }
+.lesson-chip {
+  padding: 8px 14px;
+  border: 2px solid var(--primary);
+  color: var(--primary-d);
+  background: #fff;
+  border-radius: 999px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: .15s;
+}
+.lesson-chip:hover { background: #e6f1fb; }
+.lesson-chip.active { background: var(--primary); color: #fff; }
+
+.play-area {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, .05);
+}
+
+.stats { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+.stat {
+  flex: 1;
+  min-width: 70px;
+  background: var(--bg);
+  border-radius: 12px;
+  padding: 10px;
+  text-align: center;
+}
+.stat-val { display: block; font-size: 22px; font-weight: 600; }
+.stat-key { font-size: 12px; color: var(--muted); }
+
+.text-display {
+  font-size: 26px;
+  line-height: 1.9;
+  letter-spacing: 1px;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  outline: none;
+  user-select: none;
+  white-space: pre-wrap;
+  word-break: break-word;
+  min-height: 120px;
+}
+.char { display: inline-block; padding: 2px 1px; border-radius: 6px; transition: .1s; }
+.char.current { background: var(--current); box-shadow: 0 0 0 2px var(--current-border); }
+.char.correct { color: var(--correct); }
+.char.wrong { color: var(--wrong); background: var(--wrong-bg); }
+
+.btn-restart {
+  margin-top: 16px;
+  padding: 8px 16px;
+  border: 1px solid var(--muted);
+  background: #fff;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.keyboard { margin-top: 22px; user-select: none; touch-action: manipulation; overflow-x: auto; padding-bottom: 6px; }
+.kb-row { display: flex; justify-content: center; gap: 6px; margin-bottom: 6px; flex-wrap: nowrap; }
+.kb-spacer { width: 16px; flex: 0 0 auto; }
+.key-fn { font-size: 12px; min-width: 30px; padding: 0 4px; }
+.key {
+  min-width: 34px;
+  height: 46px;
+  padding: 0 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  border: 1px solid #d3d1c7;
+  border-bottom-width: 3px;
+  border-radius: 10px;
+  font-size: 15px;
+  font-family: inherit;
+  color: var(--ink);
+  cursor: pointer;
+  transition: .08s;
+  user-select: none;
+}
+.key:active { transform: translateY(1px); }
+.key.active {
+  background: var(--current);
+  box-shadow: 0 0 0 2px var(--current-border);
+}
+.key-wide { min-width: 60px; }
+.key-space { min-width: 220px; }
+
+.hint { text-align: center; color: var(--muted); font-size: 13px; margin-top: 18px; }
+
+/* 关卡"最佳成绩"徽标 */
+.chip-best {
+  display: inline-block;
+  margin-left: 4px;
+  font-size: 11px;
+  color: #fff;
+  background: var(--correct);
+  border-radius: 999px;
+  padding: 1px 7px;
+  vertical-align: middle;
+}
+
+/* 功能键认知模式：把每一步渲染成"键帽卡片" */
+.text-display.keys-mode {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  justify-content: center;
+  min-height: 140px;
+}
+.key-card {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 14px 18px;
+  background: var(--bg);
+  border: 2px solid #d3d1c7;
+  border-radius: 14px;
+  transition: .12s;
+}
+.key-card .kc-cap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 34px;
+  height: 38px;
+  padding: 0 8px;
+  background: #fff;
+  border: 1px solid #d3d1c7;
+  border-bottom-width: 3px;
+  border-radius: 9px;
+  font-size: 16px;
+  font-family: inherit;
+}
+.key-card .kc-plus { color: var(--muted); font-size: 16px; margin: 0 1px; }
+.key-card.current { border-color: var(--current-border); box-shadow: 0 0 0 3px var(--current); background: #fff; }
+.key-card.done { opacity: .5; }
+.key-card.done .kc-cap { color: var(--correct); border-color: var(--correct); }
+.key-card .kc-cap.active {
+  background: var(--current);
+  box-shadow: 0 0 0 2px var(--current-border);
+  border-color: var(--current-border);
+}
+
+.result-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, .4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 10;
+}
+.result-card {
+  background: #fff;
+  border-radius: var(--radius);
+  padding: 28px;
+  max-width: 360px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, .2);
+}
+.result-card h2 { margin: 0 0 16px; }
+.result-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+.result-stats div { background: var(--bg); border-radius: 12px; padding: 12px; }
+.result-stats b { display: block; font-size: 24px; }
+.result-stats span { font-size: 12px; color: var(--muted); }
+.btn-primary {
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+@media (max-width: 560px) {
+  .app-header h1 { font-size: 24px; }
+  .text-display { font-size: 22px; }
+  .key { min-width: 26px; height: 42px; font-size: 13px; padding: 0 5px; }
+  .key-wide { min-width: 44px; }
+  .key-space { min-width: 140px; }
+}

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>键盘小能手 · 学打字</title>
+  <meta name="theme-color" content="#0f172a">
+  <!-- PWA / iPad 添加到主屏幕 -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="键盘小能手">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="apple-touch-icon" href="/assets/icons/icon-180.png">
+  <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body>
+  <div class="app">
+    <header class="app-header">
+      <h1>⌨️ 键盘小能手</h1>
+      <p class="subtitle">跟小键盘做朋友，一起学打字！</p>
+    </header>
+
+    <section class="lesson-bar">
+      <span class="lesson-label">选一关：</span>
+      <div class="lesson-list" id="lessonList"></div>
+    </section>
+
+    <main class="play-area" id="playArea" hidden>
+      <div class="stats" id="stats">
+        <div class="stat"><span class="stat-val" id="statTime">0s</span><span class="stat-key">时间</span></div>
+        <div class="stat"><span class="stat-val" id="statWpm">0</span><span class="stat-key">速度</span></div>
+        <div class="stat"><span class="stat-val" id="statAcc">100%</span><span class="stat-key">正确率</span></div>
+        <div class="stat"><span class="stat-val" id="statProg">0%</span><span class="stat-key">进度</span></div>
+      </div>
+
+      <div class="text-display" id="textDisplay" tabindex="0"></div>
+
+      <button class="btn-restart" id="btnRestart">↻ 重新来过</button>
+    </main>
+
+    <div class="keyboard" id="keyboard"></div>
+
+    <div class="hint" id="hint">提示：在电脑上直接敲键盘，在平板上点下面的按键～</div>
+  </div>
+
+  <div class="result-modal" id="resultModal" hidden>
+    <div class="result-card">
+      <h2>🎉 完成啦！</h2>
+      <div class="result-stats" id="resultStats"></div>
+      <button class="btn-primary" id="btnAgain">再来一关</button>
+    </div>
+  </div>
+
+  <script src="/assets/js/keyboard.js"></script>
+  <script src="/assets/js/typing.js"></script>
+  <script src="/assets/js/app.js"></script>
+</body>
+</html>
