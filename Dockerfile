@@ -9,5 +9,5 @@ RUN CGO_ENABLED=0 go build -o /out/keyboard .
 FROM alpine:3.20
 WORKDIR /app
 COPY --from=build /out/keyboard .
-EXPOSE 8080
+EXPOSE 9212
 ENTRYPOINT ["./keyboard"]

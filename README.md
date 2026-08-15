@@ -57,7 +57,7 @@ keyboard/
 | 字段 | 说明 | 默认 |
 |---|---|---|
 | `DevMode` | 开发模式，开启后直接从 `api/static` 目录读文件（热更新、无需重编译） | `true` |
-| `ApiPort` | 监听端口 | `8080` |
+| `ApiPort` | 监听端口 | `9212` |
 | `StaticDir` | 覆盖静态目录（留空则按 DevMode 决定：开发用磁盘、生产用内置） | `""` |
 | `BaseURL` | 站点基础路径（可选），用于生成资源链接 | `""` |
 | `SqlitePath` | SQLite 数据库文件路径 | `keyboard.db` |
@@ -77,12 +77,12 @@ keyboard/
 
 ```bash
 # 上报成绩
-curl -X POST http://localhost:8080/api/v1/progress \
+curl -X POST http://localhost:9212/api/v1/progress \
   -H 'Content-Type: application/json' \
   -d '{"lesson_id":"home-row","wpm":18,"accuracy":98,"duration":25,"errors":1}'
 
 # 查询某关成绩
-curl "http://localhost:8080/api/v1/progress?lesson_id=home-row"
+curl "http://localhost:9212/api/v1/progress?lesson_id=home-row"
 ```
 
 ## 数据库
@@ -114,7 +114,7 @@ CREATE TABLE IF NOT EXISTS progress (
 ```bash
 cd keyboard
 go run .                 # DevMode 默认开启，自动热更新 api/static
-# 浏览器打开 http://localhost:8080
+# 浏览器打开 http://localhost:9212
 
 # 生产/离线构建
 go build -o keyboard .
@@ -125,8 +125,8 @@ go build -o keyboard .
 
 ## 部署
 
-- **Docker**：`docker build -t keybuddy . && docker run -p 8080:8080 keybuddy`
-- **Nginx**：参考 `deploy/nginx/conf.d/keyboard.conf` 反代到后端 8080 端口（建议开启 HTTPS，PWA 在 HTTPS 下才能安装）。
+- **Docker**：`docker build -t keybuddy . && docker run -p 9212:9212 keybuddy`
+- **Nginx**：参考 `deploy/nginx/conf.d/keyboard.conf` 反代到后端 9212 端口（建议开启 HTTPS，PWA 在 HTTPS 下才能安装）。
 
 ## 后续规划
 

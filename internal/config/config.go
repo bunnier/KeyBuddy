@@ -46,7 +46,7 @@ func Load(path string) (*Config, error) {
 func defaultConfig() *Config {
 	return &Config{
 		DevMode:    true,
-		ApiPort:    8080,
+		ApiPort:    9212,
 		SqlitePath: "keyboard.db",
 	}
 }
