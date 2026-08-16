@@ -55,34 +55,76 @@ body {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 16px;
-  background: var(--card);
-  border-radius: var(--radius);
-  padding: 10px 14px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, .05);
+  gap: 10px;
+  margin-bottom: 10px;
 }
-.profile-label { color: var(--muted); font-size: 14px; }
-.profile-select {
-  padding: 8px 10px;
-  border: 2px solid var(--primary);
-  border-radius: 10px;
+.profile-tag {
+  display: inline-flex;
+  align-items: center;
   font-size: 14px;
+  font-weight: 600;
   color: var(--primary-d);
-  background: #fff;
-  cursor: pointer;
-  max-width: 180px;
+  background: #e6f1fb;
+  padding: 7px 14px;
+  border-radius: 999px;
 }
-.profile-btn {
-  padding: 8px 12px;
-  border: 1px solid var(--muted);
+.profile-list { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.profile-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 4px 14px 4px 4px;
   background: #fff;
-  border-radius: 10px;
+  border: 2px solid #e3e8ef;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--ink);
+  transition: .15s;
+  line-height: 1;
+}
+.profile-pill:hover { border-color: var(--primary); }
+.profile-pill.active { background: var(--primary); border-color: var(--primary); color: #fff; }
+.profile-pill .avatar {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #e6f1fb;
+  color: var(--primary-d);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+}
+.profile-pill.active .avatar { background: rgba(255, 255, 255, .28); color: #fff; }
+.profile-pill .pname { padding-right: 2px; }
+.profile-add {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 2px dashed var(--primary);
+  background: #fff;
+  color: var(--primary);
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  transition: .15s;
+}
+.profile-add:hover { background: #e6f1fb; }
+.profile-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
+.profile-mini {
+  padding: 6px 14px;
+  border: 1px solid #d8d8d2;
+  background: #fff;
+  border-radius: 999px;
   cursor: pointer;
   font-size: 13px;
   color: var(--ink);
+  transition: .15s;
 }
-.profile-btn:hover { background: var(--bg); }
+.profile-mini:hover { background: var(--bg); }
+.profile-mini.danger:hover { background: #fdeaea; border-color: var(--wrong); color: var(--wrong); }
 .lesson-chip {
   padding: 8px 14px;
   border: 2px solid var(--primary);

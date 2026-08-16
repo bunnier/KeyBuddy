@@ -22,7 +22,7 @@
   const statProg = document.getElementById("statProg");
 
   // 身份管理相关 DOM
-  const profileSelect = document.getElementById("profileSelect");
+  const profileList = document.getElementById("profileList");
   const btnAddProfile = document.getElementById("btnAddProfile");
   const btnRenameProfile = document.getElementById("btnRenameProfile");
   const btnDeleteProfile = document.getElementById("btnDeleteProfile");
@@ -72,21 +72,33 @@
     return p ? p.name : "打字小白";
   }
   function renderProfileBar() {
-    profileSelect.innerHTML = "";
+    profileList.innerHTML = "";
     profiles.forEach(function (p) {
-      const opt = document.createElement("option");
-      opt.value = p.id;
-      opt.textContent = p.name;
-      if (p.id === currentProfile) opt.selected = true;
-      profileSelect.appendChild(opt);
+      const pill = document.createElement("button");
+      pill.type = "button";
+      pill.className = "profile-pill" + (p.id === currentProfile ? " active" : "");
+
+      const av = document.createElement("span");
+      av.className = "avatar";
+      av.textContent = (p.name || "?").trim().charAt(0) || "?";
+
+      const nm = document.createElement("span");
+      nm.className = "pname";
+      nm.textContent = p.name;
+
+      pill.appendChild(av);
+      pill.appendChild(nm);
+      pill.addEventListener("click", function () {
+        if (currentProfile === p.id) return;
+        currentProfile = p.id;
+        try { localStorage.setItem(CURRENT_KEY, currentProfile); } catch (e) {}
+        renderProfileBar();
+        loadProgress(function () { renderLessons(lessons); });
+      });
+      profileList.appendChild(pill);
     });
   }
   function wireProfileEvents() {
-    profileSelect.addEventListener("change", function () {
-      currentProfile = profileSelect.value;
-      try { localStorage.setItem(CURRENT_KEY, currentProfile); } catch (e) {}
-      loadProgress(function () { renderLessons(lessons); });
-    });
     btnAddProfile.addEventListener("click", function () {
       const name = window.prompt("给新身份起个名字：", "新身份");
       if (name === null) return;

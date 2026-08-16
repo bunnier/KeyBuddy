@@ -22,12 +22,14 @@
     </header>
 
     <section class="profile-bar">
-      <span class="profile-label">我是</span>
-      <select id="profileSelect" class="profile-select" aria-label="选择身份"></select>
-      <button id="btnAddProfile" class="profile-btn" title="新增一个本地身份">＋ 新身份</button>
-      <button id="btnRenameProfile" class="profile-btn" title="给当前身份改名（仅本机）">改名</button>
-      <button id="btnDeleteProfile" class="profile-btn" title="删除当前身份（仅本机，成绩仍留库）">删除</button>
+      <span class="profile-tag">🐤 我是</span>
+      <div class="profile-list" id="profileList"></div>
+      <button id="btnAddProfile" class="profile-add" title="新增一个本地身份" aria-label="新增身份">＋</button>
     </section>
+    <div class="profile-actions">
+      <button id="btnRenameProfile" class="profile-mini" title="给当前身份改名（仅本机）">✎ 改名</button>
+      <button id="btnDeleteProfile" class="profile-mini danger" title="删除当前身份（仅本机，成绩仍留库）">🗑 删除</button>
+    </div>
 
     <section class="lesson-bar">
       <span class="lesson-label">选一关：</span>
