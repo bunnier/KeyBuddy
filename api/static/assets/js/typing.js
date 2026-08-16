@@ -25,8 +25,15 @@
     "=": "Equal",
     "`": "Backquote"
   };
+  // 纯修饰键的 token（来自虚拟键盘点按）映射到左侧物理 code，
+  // 这样在 type 模式下点 Shift/Ctrl 等会被正确识别为修饰键并忽略，而不会记错。
+  const MODIFIER_KEY_TO_CODE = {
+    Shift: "ShiftLeft", Control: "ControlLeft", Alt: "AltLeft",
+    Meta: "MetaLeft", CapsLock: "CapsLock"
+  };
   function charToCode(ch) {
     if (!ch) return null;
+    if (MODIFIER_KEY_TO_CODE[ch]) return MODIFIER_KEY_TO_CODE[ch];
     const lower = ch.toLowerCase();
     if (lower >= "a" && lower <= "z") return "Key" + lower.toUpperCase();
     if (lower >= "0" && lower <= "9") return "Digit" + lower;
@@ -250,4 +257,6 @@
   }
 
   global.TypingEngine = TypingEngine;
+  // 暴露给虚拟键盘/调用方，把"点按的键"补成物理 code，与真实键盘统一比对。
+  global.keyToCode = charToCode;
 })(window);

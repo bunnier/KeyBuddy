@@ -146,9 +146,13 @@
   }
 
   // Unified input entry, shared by the physical keyboard and on-screen taps.
+  // 虚拟点按通常只给 key（如 "A"/" "），这里自动补上物理 code，
+  // 与真实键盘的 event.code 统一走 handleType 的 code 比对，避免"点对键却判错"。
   window.dispatchTypingKey = function (key, code) {
     if (!engine || playArea.hidden) return;
-    engine.handleKey(key, code);
+    const resolvedCode = code !== undefined ? code
+      : (typeof window.keyToCode === "function" ? window.keyToCode(key) : undefined);
+    engine.handleKey(key, resolvedCode);
     const hk = engine.getHighlightKey();
     KeyboardView.highlight(hk !== null ? hk : key);
   };
