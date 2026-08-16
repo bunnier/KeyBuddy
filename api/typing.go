@@ -122,17 +122,19 @@ func (typingApi) GetLessons(_ *api_base.ApiContext) any {
 
 // ProgressReq 是保存打字练习结果的请求体。
 type ProgressReq struct {
-	LessonID string  `json:"lesson_id"`
-	Wpm      float64 `json:"wpm"`
-	Accuracy float64 `json:"accuracy"`
-	Duration int     `json:"duration"` // 耗时（秒）
-	Errors   int     `json:"errors"`   // 错误次数
+	LessonID  string  `json:"lesson_id"`
+	ProfileID string  `json:"profile_id"` // 身份随机串（仅本地名称不传，接口只存这个串）
+	Wpm       float64 `json:"wpm"`
+	Accuracy  float64 `json:"accuracy"`
+	Duration  int     `json:"duration"` // 耗时（秒）
+	Errors    int     `json:"errors"`   // 错误次数
 }
 
 // ProgressRow 是 progress 表的一行（用于 ORM 映射，conv tag 对应数据库列名）。
 type ProgressRow struct {
 	ID        int64   `conv:"id" json:"id"`
 	LessonID  string  `conv:"lesson_id" json:"lesson_id"`
+	ProfileID string  `conv:"profile_id" json:"profile_id"`
 	Wpm       float64 `conv:"wpm" json:"wpm"`
 	Accuracy  float64 `conv:"accuracy" json:"accuracy"`
 	Duration  int     `conv:"duration" json:"duration"`
@@ -143,6 +145,7 @@ type ProgressRow struct {
 // LessonStat 是某关卡的统计聚合。
 type LessonStat struct {
 	LessonID    string  `conv:"lesson_id" json:"lesson_id"`
+	ProfileID   string  `conv:"profile_id" json:"profile_id"`
 	Attempts    int64   `conv:"attempts" json:"attempts"`
 	BestWpm     float64 `conv:"best_wpm" json:"best_wpm"`
 	AvgAccuracy float64 `conv:"avg_accuracy" json:"avg_accuracy"`
@@ -152,51 +155,56 @@ type LessonStat struct {
 //
 //	@route POST /api/v1/progress
 func (typingApi) SaveProgress(_ *api_base.ApiContext, req ProgressReq) any {
-	if req.LessonID == "" {
+	if req.LessonID == "" || req.ProfileID == "" {
 		panic(api_base.ErrInvalidRequest)
 	}
 	_, err := resx.Db.Execute(
-		"INSERT INTO progress(lesson_id, wpm, accuracy, duration, errors, created_at) VALUES(@p1,@p2,@p3,@p4,@p5,@p6)",
-		req.LessonID, req.Wpm, req.Accuracy, req.Duration, req.Errors,
+		"INSERT INTO progress(lesson_id, profile_id, wpm, accuracy, duration, errors, created_at) VALUES(@p1,@p2,@p3,@p4,@p5,@p6,@p7)",
+		req.LessonID, req.ProfileID, req.Wpm, req.Accuracy, req.Duration, req.Errors,
 		time.Now().UTC().Format(time.RFC3339),
 	)
 	if err != nil {
 		panic(api_base.NewBizError(api_base.CodeInternalError, "保存进度失败"))
 	}
-	return map[string]any{"saved": true, "lesson_id": req.LessonID}
+	return map[string]any{"saved": true, "lesson_id": req.LessonID, "profile_id": req.ProfileID}
 }
 
 // ProgressQuery 是 GET /api/v1/progress 的查询参数。
 type ProgressQuery struct {
-	LessonID string `json:"lesson_id"` // 可选：指定关卡则返回该关卡明细，否则返回全部关卡汇总
+	LessonID  string `json:"lesson_id"`  // 可选：指定关卡则返回该关卡明细，否则返回全部关卡汇总
+	ProfileID string `json:"profile_id"` // 必填：按身份随机串隔离查询
 }
 
-// GetProgress 查询打字进度。
+// GetProgress 查询打字进度（按 profile_id 隔离）。
 //   - 指定 lesson_id：返回该关卡最近 50 条记录(items)与聚合统计(stats)；
-//   - 未指定：返回各关卡的聚合统计汇总(by_lesson)。
+//   - 未指定：返回该身份各关卡的聚合统计汇总(by_lesson)。
 //
 //	@route GET /api/v1/progress
 func (typingApi) GetProgress(_ *api_base.ApiContext, q ProgressQuery) any {
+	if q.ProfileID == "" {
+		panic(api_base.ErrInvalidRequest)
+	}
 	if q.LessonID != "" {
 		rows := resx.Db.MustListOf(new(ProgressRow),
-			`SELECT id, lesson_id, wpm, accuracy, duration, errors, created_at
-			 FROM progress WHERE lesson_id=@p1 ORDER BY id DESC LIMIT 50`,
-			q.LessonID,
+			`SELECT id, lesson_id, profile_id, wpm, accuracy, duration, errors, created_at
+			 FROM progress WHERE lesson_id=@p1 AND profile_id=@p2 ORDER BY id DESC LIMIT 50`,
+			q.LessonID, q.ProfileID,
 		).([]*ProgressRow)
 
 		var stat LessonStat
 		resx.Db.MustGetStruct(&stat,
-			`SELECT lesson_id, COUNT(1) AS attempts, MAX(wpm) AS best_wpm, AVG(accuracy) AS avg_accuracy
-			 FROM progress WHERE lesson_id=@p1`,
-			q.LessonID,
+			`SELECT lesson_id, profile_id, COUNT(1) AS attempts, MAX(wpm) AS best_wpm, AVG(accuracy) AS avg_accuracy
+			 FROM progress WHERE lesson_id=@p1 AND profile_id=@p2`,
+			q.LessonID, q.ProfileID,
 		)
 
 		return map[string]any{"items": rows, "stats": &stat}
 	}
 
 	stats := resx.Db.MustListOf(new(LessonStat),
-		`SELECT lesson_id, COUNT(1) AS attempts, MAX(wpm) AS best_wpm, AVG(accuracy) AS avg_accuracy
-		 FROM progress GROUP BY lesson_id`,
+		`SELECT lesson_id, profile_id, COUNT(1) AS attempts, MAX(wpm) AS best_wpm, AVG(accuracy) AS avg_accuracy
+		 FROM progress WHERE profile_id=@p1 GROUP BY lesson_id`,
+		q.ProfileID,
 	).([]*LessonStat)
 
 	byLesson := make(map[string]*LessonStat, len(stats))

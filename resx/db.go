@@ -47,4 +47,28 @@ func createSchema() {
 		);
 		CREATE INDEX IF NOT EXISTS idx_progress_lesson ON progress(lesson_id, id DESC);
 	`)
+	migrateProfileColumn()
+}
+
+// migrateProfileColumn 把 progress 表升级到带身份(profile_id)的版本。
+//   - 旧表没有 profile_id 列时，ALTER 补一列（默认空串）；
+//   - 历史上没有身份概念的记录（profile_id 为空）一次性认领到固定 'legacy' 身份，
+//     这样旧测试成绩不会在切换身份时丢失，只是归到"历史记录"档案下。
+func migrateProfileColumn() {
+	type colInfo struct {
+		Name string `conv:"name"`
+	}
+	cols := Db.MustListOf(new(colInfo), `PRAGMA table_info(progress)`).([]*colInfo)
+	hasProfile := false
+	for _, c := range cols {
+		if c.Name == "profile_id" {
+			hasProfile = true
+			break
+		}
+	}
+	if !hasProfile {
+		Db.MustExecute(`ALTER TABLE progress ADD COLUMN profile_id TEXT NOT NULL DEFAULT ''`)
+	}
+	// 把仍为空身份的历史记录认领到固定 legacy 身份（仅影响升级前的旧数据）。
+	Db.MustExecute(`UPDATE progress SET profile_id = 'legacy' WHERE profile_id = '' OR profile_id IS NULL`)
 }
