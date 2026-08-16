@@ -45,8 +45,12 @@ var builtinLessons = []Lesson{
 	// —— 逐字输入：字母指法渐进 ——
 	{ID: "home-row", Title: "回家键行", Description: "先熟悉键盘中间那一行 A S D F G H J K L ;", Level: "basic", Kind: "type",
 		Text: "asdf jkl; asdf jkl; fdsa lkj; f j d k s l a;"},
+	{ID: "home-top-fingers", Title: "上排手指伸展", Description: "先练同一根手指从中排伸到上排，如 A→Q、S→W（含对调）", Level: "basic", Kind: "type",
+		Text: "aq sw de fr ft fg jh jy ju ki lo ;p qa ws ed rf tf gf hj yj uj ik ol p; aq sw de fr ft fg jh jy ju ki lo ;p"},
 	{ID: "home-top", Title: "中排 + 上排", Description: "在回家键基础上，加最上面那一行 Q W E R T Y U I O P", Level: "basic", Kind: "type",
 		Text: "we are the type of quiet people ask ready"},
+	{ID: "home-bottom-fingers", Title: "下排手指伸展", Description: "先练同一根手指从中排伸到下排，如 A→Z、S→X（含对调）", Level: "basic", Kind: "type",
+		Text: "az sx dc fv fb gn hn jm jn k, l. ;/ za xs cd vf bf ng nh mj nj ,k .l /; az sx dc fv fb gn hn jm jn k, l. ;/"},
 	{ID: "home-bottom", Title: "中排 + 下排", Description: "在回家键基础上，加最下面那一行 Z X C V B N M", Level: "intermediate", Kind: "type",
 		Text: "can man bad bag back land sand band gas van fan"},
 	{ID: "letters", Title: "全部字母", Description: "三排字母一起练，打遍 26 个英文字母", Level: "intermediate", Kind: "type",
