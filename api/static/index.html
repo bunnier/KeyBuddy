@@ -17,23 +17,31 @@
 <body>
   <div class="app">
     <header class="app-header">
-      <h1>⌨️ 键盘小能手</h1>
-      <p class="subtitle">跟小键盘做朋友，一起学打字！</p>
+      <div class="brand">
+        <h1>⌨️ 键盘小能手</h1>
+        <p class="subtitle">跟小键盘做朋友，一起学打字！</p>
+      </div>
+      <div class="player-menu" id="playerMenu">
+        <button id="playerTrigger" class="player-trigger" title="点击管理玩家" aria-haspopup="true" aria-expanded="false">
+          <span class="avatar" id="playerAvatar">打</span>
+          <span class="pname" id="playerName">打字小白</span>
+          <span class="caret">▾</span>
+        </button>
+        <div class="player-dropdown" id="playerDropdown" hidden>
+          <div class="dropdown-title">切换玩家</div>
+          <div class="dropdown-list" id="dropdownList"></div>
+          <div class="dropdown-divider"></div>
+          <button class="dropdown-item" id="btnAddProfile">＋ 新增玩家</button>
+          <button class="dropdown-item" id="btnRenameProfile">✎ 重命名</button>
+          <button class="dropdown-item danger" id="btnDeleteProfile">🗑 删除当前</button>
+        </div>
+      </div>
     </header>
 
-    <section class="profile-bar">
-      <span class="profile-tag">🐤 我是</span>
-      <div class="profile-list" id="profileList"></div>
-      <button id="btnAddProfile" class="profile-add" title="新增一个本地身份" aria-label="新增身份">＋</button>
-    </section>
-    <div class="profile-actions">
-      <button id="btnRenameProfile" class="profile-mini" title="给当前身份改名（仅本机）">✎ 改名</button>
-      <button id="btnDeleteProfile" class="profile-mini danger" title="删除当前身份（仅本机，成绩仍留库）">🗑 删除</button>
-    </div>
-
     <section class="lesson-bar">
-      <span class="lesson-label">选一关：</span>
-      <div class="lesson-list" id="lessonList"></div>
+      <div class="lesson-list" id="lessonList">
+        <span class="lesson-label">选一关：</span>
+      </div>
     </section>
 
     <main class="play-area" id="playArea" hidden>

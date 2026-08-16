@@ -59,16 +59,22 @@
     thumb: "拇指（左右手）"
   };
 
+  // 键盘上方指引条只显示合并后的手指名称，不区分左右手。
+  const GUIDE_FINGERS = ["lp", "lr", "lm", "li", "thumb"];
+  const GUIDE_NAMES = {
+    lp: "小指", lr: "无名指", lm: "中指", li: "食指", thumb: "拇指"
+  };
+
   function render(container) {
     container.innerHTML = "";
 
-    // 顶部指引：右手四指
+    // 顶部指引：合并左右手，只显示 5 个手指名称。
     const topGuide = document.createElement("div");
-    topGuide.className = "kb-guide kb-guide-top";
-    ["ri", "rm", "rr", "rp"].forEach(function (f) {
+    topGuide.className = "kb-guide";
+    GUIDE_FINGERS.forEach(function (f) {
       const s = document.createElement("span");
       s.className = "fg-name fg-" + f;
-      s.textContent = FINGER_NAMES[f];
+      s.textContent = GUIDE_NAMES[f];
       topGuide.appendChild(s);
     });
     container.appendChild(topGuide);
@@ -112,16 +118,6 @@
       container.appendChild(rowEl);
     });
 
-    // 底部指引：左手四指 + 拇指
-    const bottomGuide = document.createElement("div");
-    bottomGuide.className = "kb-guide kb-guide-bottom";
-    ["lp", "lr", "lm", "li", "thumb"].forEach(function (f) {
-      const s = document.createElement("span");
-      s.className = "fg-name fg-" + f;
-      s.textContent = FINGER_NAMES[f];
-      bottomGuide.appendChild(s);
-    });
-    container.appendChild(bottomGuide);
   }
 
   // highlight 高亮给定键；传入数组可同时高亮多个（组合键）；传 null/空清除高亮。

@@ -22,10 +22,15 @@
   const statProg = document.getElementById("statProg");
 
   // 身份管理相关 DOM
-  const profileList = document.getElementById("profileList");
-  const btnAddProfile = document.getElementById("btnAddProfile");
-  const btnRenameProfile = document.getElementById("btnRenameProfile");
-  const btnDeleteProfile = document.getElementById("btnDeleteProfile");
+  const playerMenu      = document.getElementById("playerMenu");
+  const playerTrigger   = document.getElementById("playerTrigger");
+  const playerAvatar    = document.getElementById("playerAvatar");
+  const playerName      = document.getElementById("playerName");
+  const playerDropdown  = document.getElementById("playerDropdown");
+  const dropdownList    = document.getElementById("dropdownList");
+  const btnAddProfile   = document.getElementById("btnAddProfile");
+  const btnRenameProfile= document.getElementById("btnRenameProfile");
+  const btnDeleteProfile= document.getElementById("btnDeleteProfile");
 
   let engine = null;
   let lessons = [];
@@ -35,7 +40,6 @@
   // —— 身份（多档案）本地存储 ——
   const PROFILES_KEY = "keybuddy_profiles";
   const CURRENT_KEY = "keybuddy_current";
-  const LEGACY_ID = "legacy"; // 后端迁移时认领历史记录用的固定身份
   let profiles = [];      // [{ id, name }]
   let currentProfile = ""; // 当前身份的随机串
 
@@ -51,12 +55,13 @@
       const raw = localStorage.getItem(PROFILES_KEY);
       if (raw) profiles = JSON.parse(raw);
     } catch (e) { profiles = []; }
-    if (!Array.isArray(profiles) || !profiles.length) {
-      // 首次打开：默认"打字小白" + 历史记录档案
-      profiles = [
-        { id: newId(), name: "打字小白" },
-        { id: LEGACY_ID, name: "历史记录" }
-      ];
+    if (!Array.isArray(profiles)) profiles = [];
+    // 清理已废弃的 legacy 历史记录身份
+    profiles = profiles.filter(function (p) { return p && p.id !== "legacy"; });
+
+    if (!profiles.length) {
+      // 首次打开：只有一个默认"打字小白"
+      profiles = [{ id: newId(), name: "打字小白" }];
       saveProfiles();
     }
     let cur = "";
@@ -71,36 +76,62 @@
     const p = profiles.find(function (x) { return x.id === currentProfile; });
     return p ? p.name : "打字小白";
   }
-  function renderProfileBar() {
-    profileList.innerHTML = "";
+  function firstChar(name) {
+    return (name || "?").trim().charAt(0) || "?";
+  }
+  function setDropdown(open) {
+    playerDropdown.hidden = !open;
+    playerTrigger.setAttribute("aria-expanded", String(open));
+  }
+  function renderPlayerMenu() {
+    // 更新顶部触发器
+    const cur = profiles.find(function (x) { return x.id === currentProfile; });
+    playerAvatar.textContent = firstChar(cur ? cur.name : "打字小白");
+    playerName.textContent = cur ? cur.name : "打字小白";
+
+    // 渲染下拉列表
+    dropdownList.innerHTML = "";
     profiles.forEach(function (p) {
-      const pill = document.createElement("button");
-      pill.type = "button";
-      pill.className = "profile-pill" + (p.id === currentProfile ? " active" : "");
+      const item = document.createElement("button");
+      item.type = "button";
+      item.className = "dropdown-item" + (p.id === currentProfile ? " active" : "");
 
       const av = document.createElement("span");
-      av.className = "avatar";
-      av.textContent = (p.name || "?").trim().charAt(0) || "?";
+      av.className = "mini-avatar";
+      av.textContent = firstChar(p.name);
 
       const nm = document.createElement("span");
-      nm.className = "pname";
       nm.textContent = p.name;
+      nm.style.flex = "1 1 auto";
 
-      pill.appendChild(av);
-      pill.appendChild(nm);
-      pill.addEventListener("click", function () {
-        if (currentProfile === p.id) return;
+      item.appendChild(av);
+      item.appendChild(nm);
+      item.addEventListener("click", function () {
+        if (currentProfile === p.id) { setDropdown(false); return; }
         currentProfile = p.id;
         try { localStorage.setItem(CURRENT_KEY, currentProfile); } catch (e) {}
-        renderProfileBar();
+        renderPlayerMenu();
+        setDropdown(false);
         loadProgress(function () { renderLessons(lessons); });
       });
-      profileList.appendChild(pill);
+      dropdownList.appendChild(item);
     });
   }
   function wireProfileEvents() {
+    playerTrigger.addEventListener("click", function (e) {
+      e.stopPropagation();
+      setDropdown(playerDropdown.hidden);
+    });
+    // 点击外部关闭下拉
+    document.addEventListener("click", function (e) {
+      if (!playerDropdown.hidden && !playerMenu.contains(e.target)) {
+        setDropdown(false);
+      }
+    });
+
     btnAddProfile.addEventListener("click", function () {
-      const name = window.prompt("给新身份起个名字：", "新身份");
+      setDropdown(false);
+      const name = window.prompt("给新玩家起个名字（仅存本机）：", "新身份");
       if (name === null) return;
       const clean = name.trim() || "新身份";
       const id = newId();
@@ -108,28 +139,30 @@
       currentProfile = id;
       saveProfiles();
       try { localStorage.setItem(CURRENT_KEY, id); } catch (e) {}
-      renderProfileBar();
+      renderPlayerMenu();
       loadProgress(function () { renderLessons(lessons); });
     });
     btnRenameProfile.addEventListener("click", function () {
-      const name = window.prompt("修改当前身份名称（仅存本机）：", currentName());
+      setDropdown(false);
+      const name = window.prompt("修改当前玩家名称（仅存本机）：", currentName());
       if (name === null) return;
       const clean = name.trim();
       if (!clean) return;
       const p = profiles.find(function (x) { return x.id === currentProfile; });
-      if (p) { p.name = clean; saveProfiles(); renderProfileBar(); }
+      if (p) { p.name = clean; saveProfiles(); renderPlayerMenu(); }
     });
     btnDeleteProfile.addEventListener("click", function () {
+      setDropdown(false);
       if (profiles.length <= 1) {
         window.alert("至少保留一个身份，无法删除。");
         return;
       }
-      if (!window.confirm("删除当前身份「" + currentName() + "」？\n（仅本机移除，已保存的成绩仍留在数据库，可重新建立同名身份继续查看）")) return;
+      if (!window.confirm("删除当前玩家「" + currentName() + "」？\n（仅本机移除，已保存的成绩仍留在数据库，可重新建立同名身份继续查看）")) return;
       profiles = profiles.filter(function (x) { return x.id !== currentProfile; });
       currentProfile = profiles[0].id;
       saveProfiles();
       try { localStorage.setItem(CURRENT_KEY, currentProfile); } catch (e) {}
-      renderProfileBar();
+      renderPlayerMenu();
       loadProgress(function () { renderLessons(lessons); });
     });
   }
@@ -182,7 +215,10 @@
   });
 
   function renderLessons(list) {
-    lessonList.innerHTML = "";
+    // 保留第一个子元素（静态 label），只清空 chips
+    while (lessonList.children.length > 1) {
+      lessonList.removeChild(lessonList.lastElementChild);
+    }
     list.forEach(function (ls, i) {
       const b = document.createElement("button");
       b.className = "lesson-chip" + (i === 0 ? " active" : "");
@@ -264,7 +300,7 @@
 
   // —— 启动流程 ——
   loadProfiles();
-  renderProfileBar();
+  renderPlayerMenu();
   wireProfileEvents();
   KeyboardView.render(keyboardEl);
 
@@ -276,7 +312,7 @@
       if (!lessons.length) { hint.textContent = "没有可用的练习关卡。"; return; }
       loadProgress(function () {
         renderLessons(lessons);
-        startLesson(lessons[0], lessonList.firstElementChild);
+        startLesson(lessons[0], lessonList.children[1]);
       });
     })
     .catch(function () {
