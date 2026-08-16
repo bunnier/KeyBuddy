@@ -40,12 +40,19 @@ type KeyPart struct {
 }
 
 // builtinLessons 内置的练习关卡。后续可改为从配置或数据库加载。
+// 字母指法按"中排 → 中排+上排 → 中排+下排 → 全部字母"渐进，避免一上来就全字母。
 var builtinLessons = []Lesson{
-	// —— 逐字输入关卡 ——
-	{ID: "home-row", Title: "回家键行", Description: "先熟悉 A S D F J K L ; 这一行", Level: "basic", Kind: "type",
+	// —— 逐字输入：字母指法渐进 ——
+	{ID: "home-row", Title: "回家键行", Description: "先熟悉键盘中间那一行 A S D F G H J K L ;", Level: "basic", Kind: "type",
 		Text: "asdf jkl; asdf jkl; fdsa lkj; f j d k s l a;"},
-	{ID: "letters", Title: "全部字母", Description: "练习 26 个英文字母", Level: "basic", Kind: "type",
+	{ID: "home-top", Title: "中排 + 上排", Description: "在回家键基础上，加最上面那一行 Q W E R T Y U I O P", Level: "basic", Kind: "type",
+		Text: "we are the type of quiet people ask ready"},
+	{ID: "home-bottom", Title: "中排 + 下排", Description: "在回家键基础上，加最下面那一行 Z X C V B N M", Level: "intermediate", Kind: "type",
+		Text: "can man bad bag back land sand band gas van fan"},
+	{ID: "letters", Title: "全部字母", Description: "三排字母一起练，打遍 26 个英文字母", Level: "intermediate", Kind: "type",
 		Text: "the quick brown fox jumps over the lazy dog"},
+
+	// —— 逐字输入：进阶维度 ——
 	{ID: "digits", Title: "数字键", Description: "练习主键盘区的数字", Level: "basic", Kind: "type",
 		Text: "1234567890 0987654321 24680 13579"},
 	{ID: "words", Title: "常用单词", Description: "练习常见英文单词", Level: "intermediate", Kind: "type",
