@@ -81,7 +81,8 @@
 
     KEY_ROWS.forEach(function (row) {
       const rowEl = document.createElement("div");
-      rowEl.className = "kb-row";
+      // 功能键行（Esc + F1~F12）加专门类名，便于小屏隐藏。
+      rowEl.className = "kb-row" + (row[0] === "Escape" ? " kb-row-fn" : "");
       const seenPairs = {}; // 用于同一 token 左右手重复出现时的手动映射
       row.forEach(function (k) {
         if (k === "") {

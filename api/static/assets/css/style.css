@@ -209,8 +209,8 @@ body {
   font-size: 14px;
 }
 
-.keyboard { margin-top: 18px; user-select: none; touch-action: manipulation; overflow-x: auto; padding-bottom: 6px; }
-.kb-row { display: flex; justify-content: center; gap: 6px; margin-bottom: 6px; flex-wrap: nowrap; }
+.keyboard { margin-top: 18px; user-select: none; touch-action: manipulation; overflow-x: auto; overflow-y: hidden; padding-bottom: 6px; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; }
+.kb-row { display: flex; justify-content: center; gap: 6px; margin-bottom: 6px; flex-wrap: nowrap; width: max-content; margin-left: auto; margin-right: auto; }
 .kb-spacer { width: 16px; flex: 0 0 auto; }
 
 /* 手指分工指引条 */
@@ -220,7 +220,8 @@ body {
   gap: 12px;
   font-size: 12px;
   color: var(--muted);
-  margin: 6px 0;
+  margin: 6px auto;
+  width: max-content;
 }
 .fg-name {
   padding: 4px 14px;
@@ -394,11 +395,26 @@ body {
 .site-footer .beian:hover { color: var(--primary-d); text-decoration: underline; }
 
 @media (max-width: 560px) {
-  .app-header h1 { font-size: 24px; }
-  .text-display { font-size: 22px; }
-  .key { min-width: 26px; height: 42px; font-size: 13px; padding: 0 5px; }
-  .key-wide { min-width: 44px; }
-  .key-space { min-width: 140px; }
-  .kb-guide { font-size: 11px; gap: 6px; }
-  .fg-name { padding: 3px 10px; }
+  .app { padding-left: 10px; padding-right: 10px; }
+  .app-header h1 { font-size: 22px; }
+  .text-display { font-size: 20px; }
+  .keyboard { margin-top: 12px; }
+  .kb-row-fn .kb-spacer { display: none; }   /* 小屏隐藏功能键行内部留白，保留 Esc + F1~F12 */
+  .kb-row { gap: 4px; }
+  .key { min-width: 22px; height: 38px; font-size: 12px; padding: 0 4px; }
+  .key-wide { min-width: 36px; }
+  .key-space { min-width: 108px; }
+  .kb-guide { font-size: 10px; gap: 5px; }
+  .fg-name { padding: 2px 8px; }
+}
+
+/* 极小屏（老款 / 窄屏手机）：再压一档，整排尽量不滑动 */
+@media (max-width: 380px) {
+  .app { padding-left: 6px; padding-right: 6px; }
+  .kb-row { gap: 3px; }
+  .key { min-width: 18px; height: 34px; font-size: 11px; padding: 0 3px; }
+  .key-wide { min-width: 30px; }
+  .key-space { min-width: 84px; }
+  .kb-guide { gap: 4px; }
+  .fg-name { padding: 2px 6px; }
 }
